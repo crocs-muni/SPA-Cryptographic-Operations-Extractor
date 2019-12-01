@@ -55,11 +55,6 @@
                                       <Component id="lastSelectedTimeJSpinner" min="-2" pref="100" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                          <Component id="autoRangeJButton" max="32767" attributes="0"/>
-                                          <Component id="resetValuesJButton" pref="119" max="32767" attributes="0"/>
-                                      </Group>
                                   </Group>
                               </Group>
                               <EmptySpace pref="10" max="32767" attributes="0"/>
@@ -93,7 +88,7 @@
                   <Group type="102" attributes="0">
                       <Component id="createNewCardJButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="helpTextArea" pref="151" max="32767" attributes="0"/>
+                      <Component id="helpTextArea" pref="159" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="firstSelectedTimeJLabel" alignment="1" min="-2" max="-2" attributes="0"/>
@@ -108,15 +103,11 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="lastSelectedTimeJLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="lastSelectedTimeJSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="resetValuesJButton" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="continueJButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="enableSimilaritySearchJCheckBox" min="-2" max="-2" attributes="0"/>
-                          <Component id="autoRangeJButton" alignment="1" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                      <Component id="enableSimilaritySearchJCheckBox" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="chooseCalibrationOperationJLabel" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -186,15 +177,6 @@
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="resetValuesJButton">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Reset values"/>
-        <Property name="enabled" type="boolean" value="false"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="resetValuesJButtonActionPerformed"/>
-      </Events>
-    </Component>
     <Component class="javax.swing.JButton" name="highlightAreaJButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Highlight area"/>
@@ -234,7 +216,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="chooseCalibrationOperationJLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Choose calibration operation:"/>
+        <Property name="text" type="java.lang.String" value="Similarity search operation:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JComboBox" name="delimitingOperationJComboBox">
@@ -278,15 +260,6 @@
           <Font name="Monospaced" size="14" style="0"/>
         </Property>
       </Properties>
-    </Component>
-    <Component class="javax.swing.JButton" name="autoRangeJButton">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Auto-range"/>
-        <Property name="enabled" type="boolean" value="false"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="autoRangeJButtonActionPerformed"/>
-      </Events>
     </Component>
   </SubComponents>
 </Form>

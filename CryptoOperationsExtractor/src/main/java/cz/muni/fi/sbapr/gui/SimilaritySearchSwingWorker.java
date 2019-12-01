@@ -7,7 +7,6 @@ package cz.muni.fi.sbapr.gui;
 
 import java.util.List;
 import java.util.SortedSet;
-import javax.swing.BoundedRangeModel;
 import javax.swing.SwingWorker;
 import cz.muni.fi.sbapr.chartprocessing.Boundaries;
 import cz.muni.fi.sbapr.models.MainFrameModel;

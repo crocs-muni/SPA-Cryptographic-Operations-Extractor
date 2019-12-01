@@ -1,4 +1,4 @@
-package cz.muni.fi.sbapr.DisatanceMeasure;
+package cz.muni.fi.sbapr.disatancemeasure;
 
 /**
  * Interface defines how distance computation function should look like.

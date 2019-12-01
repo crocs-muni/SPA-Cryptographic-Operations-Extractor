@@ -26,21 +26,122 @@ import cz.muni.fi.sbapr.dataprocessing.DataManager;
 import cz.muni.fi.sbapr.dataprocessing.ExtractionHelp;
 import cz.muni.fi.sbapr.models.CreateNewCardModel;
 import cz.muni.fi.sbapr.models.MainFrameModel;
+import java.awt.Event;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
 /**
- * TODO SETTINGS
  * @author Martin
  */
 public class MainFrame extends javax.swing.JFrame {
-
     /**
      * Creates new form NewJFrame
      */
     public MainFrame() {
         initComponents();
         this.mainFrameModel = new MainFrameModel();
+        setup();
     }
 
+    protected class ResetValuesAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (mainFrameModel != null
+                    && firstSelectedTimeJSpinner != null
+                    && lastSelectedTimeJSpinner != null
+                    && saveOperationJButton != null) {
+                mainFrameModel.setFirstIndexOnChartTrace(null);
+                mainFrameModel.setLastIndexOnChartTrace(null);
+                firstSelectedTimeJSpinner.setValue(0);
+                lastSelectedTimeJSpinner.setValue(0);
+                saveOperationJButton.setEnabled(false);
+            }
+        }
+    }
+    
+    protected class AutoRangeChartAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (traceJPanel != null && traceJPanel.getComponentCount() > 0) {
+                ChartPanel chartPanel = (ChartPanel) traceJPanel.getComponent(0);
+                if (chartPanel != null) {
+                    chartPanel.restoreAutoBounds();
+                }
+            }
+        }
+    }
+
+    protected class HighlightAreaChartAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!highlightAreaJButton.isEnabled()) {
+                return;
+            }
+            if (mainFrameModel.getFirstIndexOnChartTrace() == null
+                    || mainFrameModel.getFirstIndexOnChartTrace() <= 0
+                    || mainFrameModel.getLastIndexOnChartTrace() == null
+                    || mainFrameModel.getLastIndexOnChartTrace() <= 0
+                    || mainFrameModel.getLastIndexOnChartTrace() <= mainFrameModel.getFirstIndexOnChartTrace()) {
+                JOptionPane.showMessageDialog(MainFrame.this, "Could not highlight area.");
+                return;
+            }
+            Boundaries boundaries = new Boundaries(
+                    mainFrameModel.getCurrentTrace().getTimeOnPosition(ChartManager.modifiedToOriginalIndex(mainFrameModel.getFirstIndexOnChartTrace()))
+                    , mainFrameModel.getCurrentTrace().getTimeOnPosition(ChartManager.modifiedToOriginalIndex(mainFrameModel.getLastIndexOnChartTrace()))
+                    , mainFrameModel.getFirstIndexOnChartTrace()
+                    , mainFrameModel.getLastIndexOnChartTrace());
+            List<Boundaries> boundariesList = new ArrayList<>();
+            boundariesList.add(boundaries);
+            highlightArea(boundariesList, DataManager.getOperationInfoForInstruction(mainFrameModel.getCurrentOperationRecord().getInstructionName()).getCodeName());
+            saveOperationJButton.setEnabled(true);
+        }
+    }
+    
+    protected class SaveOperationAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (saveOperationJButton.isEnabled()) {
+                saveOperation(
+                    ChartManager.modifiedToOriginalIndex(mainFrameModel.getFirstIndexOnChartTrace())
+                    , ChartManager.modifiedToOriginalIndex(mainFrameModel.getLastIndexOnChartTrace()));
+                fillComboBoxIfCalibrationOperation();
+            }
+        }
+    }
+    
+    private final HashMap<KeyStroke, Action> actionMap = new HashMap<>();
+
+    private void setup() {
+        KeyStroke keyResetValues = KeyStroke.getKeyStroke(KeyEvent.VK_R, Event.CTRL_MASK);
+        KeyStroke keyAutoRange = KeyStroke.getKeyStroke(KeyEvent.VK_A, Event.CTRL_MASK);
+        KeyStroke keySaveOperation = KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK);
+        KeyStroke keyHighlightArea = KeyStroke.getKeyStroke(KeyEvent.VK_H, Event.CTRL_MASK);
+        actionMap.put(keyResetValues, new ResetValuesAction());
+        actionMap.put(keyAutoRange, new AutoRangeChartAction());
+        actionMap.put(keySaveOperation, new SaveOperationAction());
+        actionMap.put(keyHighlightArea, new HighlightAreaChartAction());
+
+        KeyboardFocusManager kfm = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        kfm.addKeyEventDispatcher((KeyEvent e) -> {
+            KeyStroke keyStroke = KeyStroke.getKeyStrokeForEvent(e);
+            if ( actionMap.containsKey(keyStroke) ) {
+                final Action a = actionMap.get(keyStroke);
+                final ActionEvent ae = new ActionEvent(e.getSource(), e.getID(), null );
+                SwingUtilities.invokeLater(() -> {
+                    a.actionPerformed(ae);
+                }); 
+            return true;
+            }
+            return false;
+        });
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -56,7 +157,6 @@ public class MainFrame extends javax.swing.JFrame {
         lastSelectedTimeJLabel = new javax.swing.JLabel();
         firstSelectedTimeJSpinner = new javax.swing.JSpinner();
         lastSelectedTimeJSpinner = new javax.swing.JSpinner();
-        resetValuesJButton = new javax.swing.JButton();
         highlightAreaJButton = new javax.swing.JButton();
         saveOperationJButton = new javax.swing.JButton();
         continueJButton = new javax.swing.JButton();
@@ -67,7 +167,6 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         helpTextArea = new java.awt.TextArea();
-        autoRangeJButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -88,14 +187,6 @@ public class MainFrame extends javax.swing.JFrame {
         firstSelectedTimeJSpinner.setEnabled(false);
 
         lastSelectedTimeJSpinner.setEnabled(false);
-
-        resetValuesJButton.setText("Reset values");
-        resetValuesJButton.setEnabled(false);
-        resetValuesJButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                resetValuesJButtonActionPerformed(evt);
-            }
-        });
 
         highlightAreaJButton.setText("Highlight area");
         highlightAreaJButton.setEnabled(false);
@@ -130,7 +221,7 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        chooseCalibrationOperationJLabel.setText("Choose calibration operation:");
+        chooseCalibrationOperationJLabel.setText("Similarity search operation:");
 
         delimitingOperationJComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "No operation" }));
         delimitingOperationJComboBox.setEnabled(false);
@@ -149,14 +240,6 @@ public class MainFrame extends javax.swing.JFrame {
         helpTextArea.setBackground(new java.awt.Color(255, 255, 255));
         helpTextArea.setEditable(false);
         helpTextArea.setFont(new java.awt.Font("Monospaced", 0, 14)); // NOI18N
-
-        autoRangeJButton.setText("Auto-range");
-        autoRangeJButton.setEnabled(false);
-        autoRangeJButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                autoRangeJButtonActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -189,11 +272,7 @@ public class MainFrame extends javax.swing.JFrame {
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(lastSelectedTimeJSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel2)
-                                        .addGap(18, 18, 18)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(autoRangeJButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(resetValuesJButton, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE))))
+                                        .addComponent(jLabel2)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(continueJButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -216,7 +295,7 @@ public class MainFrame extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(createNewCardJButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(helpTextArea, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
+                        .addComponent(helpTextArea, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(firstSelectedTimeJLabel, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -229,13 +308,10 @@ public class MainFrame extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lastSelectedTimeJLabel)
                             .addComponent(lastSelectedTimeJSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(resetValuesJButton)
                             .addComponent(jLabel2)
                             .addComponent(continueJButton))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(enableSimilaritySearchJCheckBox)
-                            .addComponent(autoRangeJButton, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addComponent(enableSimilaritySearchJCheckBox)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(chooseCalibrationOperationJLabel)
@@ -271,16 +347,7 @@ public class MainFrame extends javax.swing.JFrame {
         });
         logTextArea.append("----------------------------------------------------------------\n");
     }
-    
    
-    private void resetValuesJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetValuesJButtonActionPerformed
-        mainFrameModel.setFirstIndexOnChartTrace(null);
-        mainFrameModel.setLastIndexOnChartTrace(null);
-        firstSelectedTimeJSpinner.setValue(0);
-        lastSelectedTimeJSpinner.setValue(0);
-        saveOperationJButton.setEnabled(false);
-    }//GEN-LAST:event_resetValuesJButtonActionPerformed
-
     private void highlightArea(Collection<Boundaries> delimitingOperations, Collection<Boundaries> newOperations, String operationText) {
         ChartPanel chartPanel = (ChartPanel) traceJPanel.getComponent(0);
         ChartManager.highlightChart(chartPanel, delimitingOperations, newOperations, operationText);
@@ -292,6 +359,14 @@ public class MainFrame extends javax.swing.JFrame {
     }
     
     private void highlightAreaJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_highlightAreaJButtonActionPerformed
+        if (mainFrameModel.getFirstIndexOnChartTrace() == null
+                || mainFrameModel.getFirstIndexOnChartTrace() <= 0
+                || mainFrameModel.getLastIndexOnChartTrace() == null
+                || mainFrameModel.getLastIndexOnChartTrace() <= 0
+                || mainFrameModel.getLastIndexOnChartTrace() <= mainFrameModel.getFirstIndexOnChartTrace()) {
+            JOptionPane.showMessageDialog(this, "Could not highlight area.");
+            return;
+        }
         Boundaries boundaries = new Boundaries(
                 mainFrameModel.getCurrentTrace().getTimeOnPosition(ChartManager.modifiedToOriginalIndex(mainFrameModel.getFirstIndexOnChartTrace()))
                 , mainFrameModel.getCurrentTrace().getTimeOnPosition(ChartManager.modifiedToOriginalIndex(mainFrameModel.getLastIndexOnChartTrace()))
@@ -377,6 +452,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_enableSimilaritySearchJCheckBoxActionPerformed
 
     private void createNewCardJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createNewCardJButtonActionPerformed
+        handleProcessFinished();
         showCreateNewCardDialog();
         
         if (!mainFrameModel.getCreateNewCardModel().isFinishedProcess())  {
@@ -395,19 +471,12 @@ public class MainFrame extends javax.swing.JFrame {
             handleProcessFinished();
         }
     }//GEN-LAST:event_createNewCardJButtonActionPerformed
-
-    private void autoRangeJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoRangeJButtonActionPerformed
-        ChartPanel chartPanel = (ChartPanel) traceJPanel.getComponent(0);
-        chartPanel.restoreAutoBounds();
-    }//GEN-LAST:event_autoRangeJButtonActionPerformed
     
     private void prepareHandleOperationExtractionProcess() {
         firstSelectedTimeJSpinner.setEnabled(true);
         lastSelectedTimeJSpinner.setEnabled(true);
         highlightAreaJButton.setEnabled(true);
-        resetValuesJButton.setEnabled(true);
         continueJButton.setEnabled(true);
-        autoRangeJButton.setEnabled(true);
         saveOperationJButton.setEnabled(false);
         enableSimilaritySearchJCheckBox.setEnabled(true);
         delimitingOperationJComboBox.setEnabled(true);
@@ -418,6 +487,7 @@ public class MainFrame extends javax.swing.JFrame {
         mainFrameModel.setFirstIndexOnChartTrace(null);
         mainFrameModel.setLastIndexOnChartTrace(null);
         mainFrameModel.setCurrentTrace(null);
+        System.gc();
     }
     
     private void setCurrentTraceAndLoad() throws IOException {
@@ -436,11 +506,6 @@ public class MainFrame extends javax.swing.JFrame {
                 + ExtractionHelp.codeForInstruction(mainFrameModel.getCurrentOperationRecord().getInstructionName()));
     }
     
-    /**
-     * SOMETHING CAN BE DONE ASYNC
-     * 
-     * @throws IOException 
-     */
     private void handleOperationExtractionProcess() throws IOException {
         prepareHandleOperationExtractionProcess();
 
@@ -461,7 +526,6 @@ public class MainFrame extends javax.swing.JFrame {
     
     private void handleProcessFinished() {
         highlightAreaJButton.setEnabled(false);
-        resetValuesJButton.setEnabled(false);
         saveOperationJButton.setEnabled(false);
         continueJButton.setEnabled(false);
         firstSelectedTimeJSpinner.setEnabled(false);
@@ -471,7 +535,6 @@ public class MainFrame extends javax.swing.JFrame {
         firstSelectedTimeJSpinner.setEnabled(false);
         lastSelectedTimeJSpinner.setEnabled(false);
         delimitingOperationJComboBox.setEnabled(false);
-        autoRangeJButton.setEnabled(false);
         logTextArea.setText("");
         helpTextArea.setText("");
         traceJPanel.removeAll();
@@ -483,6 +546,7 @@ public class MainFrame extends javax.swing.JFrame {
         for (int i = 1; i < delimitingOperationJComboBox.getItemCount(); i++) {
             delimitingOperationJComboBox.removeItemAt(i);
         }
+        System.gc();
     }
     
     private void displayCurrentTraceOnChartPanel() {
@@ -528,7 +592,7 @@ public class MainFrame extends javax.swing.JFrame {
         
         List<Boundaries> similaritiesBoundaries = findSimilarities();
         
-        if (similaritiesBoundaries != null) {
+        if (similaritiesBoundaries != null && similaritiesBoundaries.size() == 6) {
             logTextArea.append(" - OK\n");
             List<Boundaries> newOperationBoundaries = new ArrayList<>();
             Collections.sort(similaritiesBoundaries);
@@ -552,6 +616,7 @@ public class MainFrame extends javax.swing.JFrame {
             }
             similaritySearchResultCheck.dispose();
         } else {
+            JOptionPane.showMessageDialog(this, "Similarity search operation unsuccessful.");
             logTextArea.append(" - NOK\n");
         }
     }
@@ -587,7 +652,6 @@ public class MainFrame extends javax.swing.JFrame {
 
     private final MainFrameModel mainFrameModel;
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton autoRangeJButton;
     private javax.swing.JLabel chooseCalibrationOperationJLabel;
     private javax.swing.JButton continueJButton;
     private javax.swing.JButton createNewCardJButton;
@@ -602,7 +666,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel lastSelectedTimeJLabel;
     private javax.swing.JSpinner lastSelectedTimeJSpinner;
     private java.awt.TextArea logTextArea;
-    private javax.swing.JButton resetValuesJButton;
     private javax.swing.JButton saveOperationJButton;
     private javax.swing.JPanel traceJPanel;
     // End of variables declaration//GEN-END:variables

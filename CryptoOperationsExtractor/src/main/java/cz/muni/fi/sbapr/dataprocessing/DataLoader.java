@@ -79,7 +79,7 @@ class DataLoader {
 
                 Trace trace = new Trace(sizeNeededForArray, voltageUnit, timeUnit);
 
-                while ((csvRow = csvReader.readNext()) != null) {
+                while ((csvRow = csvReader.readNext()) != null && addDataPositionIndex < sizeNeededForArray) {
                     if (notSkipping || !DataManager.skipFunction(allCyclesCounter)) {
                         timeValue = Double.parseDouble(csvRow[timeColumn]);
                         voltageValue = Double.parseDouble(csvRow[voltageColumn]);

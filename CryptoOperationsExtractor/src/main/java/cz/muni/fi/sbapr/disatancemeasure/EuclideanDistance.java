@@ -1,4 +1,4 @@
-package cz.muni.fi.sbapr.DisatanceMeasure;
+package cz.muni.fi.sbapr.disatancemeasure;
 
 /**
  * Class for Euclidean metric function.

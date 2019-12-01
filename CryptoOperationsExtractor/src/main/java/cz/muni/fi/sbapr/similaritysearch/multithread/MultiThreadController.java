@@ -5,7 +5,7 @@
  */
 package cz.muni.fi.sbapr.similaritysearch.multithread;
 
-import cz.muni.fi.sbapr.DisatanceMeasure.DistanceMeasure;
+import cz.muni.fi.sbapr.disatancemeasure.DistanceMeasure;
 import cz.muni.fi.sbapr.models.Trace;
 import cz.muni.fi.sbapr.similaritysearch.Similarity;
 import cz.muni.fi.sbapr.gui.SimilaritySearchSwingWorker;
@@ -41,7 +41,8 @@ public class MultiThreadController {
 
     private static void createAndStartThreads(int numberOfProcessors
             , SimilaritySearchStrategy[] strategies
-            , Thread[] threads, int delimitingNumber
+            , Thread[] threads
+            , int delimitingNumber
             , Trace trace
             , Trace operation
             , DistanceMeasure distanceAlgorithm

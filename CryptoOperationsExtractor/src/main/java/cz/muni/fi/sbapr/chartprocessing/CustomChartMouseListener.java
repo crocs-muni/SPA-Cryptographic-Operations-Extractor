@@ -31,8 +31,7 @@ public class CustomChartMouseListener implements ChartMouseListener {
     /**
      * Helper function that finds index of clicked value.
      * 
-     * @param x
-     * @param y
+     * @param realx
      * @return 
      */
     private int getIndexOfClickedValue(double realx) {
@@ -54,7 +53,6 @@ public class CustomChartMouseListener implements ChartMouseListener {
     
     private double getXClickedOnChart(ChartMouseEvent cme) {
         int x = cme.getTrigger().getX();
-        int y = cme.getTrigger().getY();
         XYItemEntity xyitem = (XYItemEntity)cme.getEntity();
         XYDataset ds = xyitem.getDataset();
         return ds.getXValue(xyitem.getSeriesIndex(), xyitem.getItem());

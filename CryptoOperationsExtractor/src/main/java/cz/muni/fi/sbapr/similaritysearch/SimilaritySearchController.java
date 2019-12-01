@@ -6,9 +6,9 @@
 package cz.muni.fi.sbapr.similaritysearch;
 
 import cz.muni.fi.sbapr.gui.SimilaritySearchSwingWorker;
-import cz.muni.fi.sbapr.DisatanceMeasure.DistanceMeasure;
-import cz.muni.fi.sbapr.DisatanceMeasure.EuclideanDistance;
-import cz.muni.fi.sbapr.DisatanceMeasure.ManhattanDistance;
+import cz.muni.fi.sbapr.disatancemeasure.DistanceMeasure;
+import cz.muni.fi.sbapr.disatancemeasure.EuclideanDistance;
+import cz.muni.fi.sbapr.disatancemeasure.ManhattanDistance;
 import java.util.SortedSet;
 import javafx.util.Pair;
 import cz.muni.fi.sbapr.filters.LowPassFilter;
