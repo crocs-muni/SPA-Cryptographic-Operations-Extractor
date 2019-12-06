@@ -15,6 +15,7 @@ import cz.muni.fi.sbapr.filters.LowPassFilter;
 import cz.muni.fi.sbapr.models.Trace;
 import cz.muni.fi.sbapr.similaritysearch.multithread.MultiThreadController;
 
+
 /**
  *
  * @author Martin
@@ -71,7 +72,6 @@ public class SimilaritySearchController {
             addedRatio = added / (previousDataCounter + 1f);
         }
         return new Trace(operation.getVoltageUnit(), operation.getTimeUnit(), toAdd, operationVoltage, null, operation.getMaximalVoltage(), operation.getMinimalVoltage());
-
     }
     
     /**
@@ -113,7 +113,7 @@ public class SimilaritySearchController {
         Pair<Trace, Trace> traceOperationCopies = applyFilterMakeCopy(trace, operation);
 
         Trace modifiedOperation = adjustSamplingFrequency(traceOperationCopies.getKey(), trace.getSamplingFrequency(), traceOperationCopies.getValue(), operation.getSamplingFrequency());
-
+       
         //moveAlongYAxis(traceOperationCopies.getKey(), traceOperationCopies.getValue()); Needed functionality? What options do I have? According to max, min, 0 or other constant. Move trace or operation?
         
         return MultiThreadController.searchForSimilarities(traceOperationCopies.getKey(), modifiedOperation, distanceAlgorithm, similaritySearchTask);

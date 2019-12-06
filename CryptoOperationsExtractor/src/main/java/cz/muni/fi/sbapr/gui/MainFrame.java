@@ -107,10 +107,10 @@ public class MainFrame extends javax.swing.JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (saveOperationJButton.isEnabled()) {
-                saveOperation(
+                boolean saved = saveOperation(
                     ChartManager.modifiedToOriginalIndex(mainFrameModel.getFirstIndexOnChartTrace())
                     , ChartManager.modifiedToOriginalIndex(mainFrameModel.getLastIndexOnChartTrace()));
-                fillComboBoxIfCalibrationOperation();
+                if (saved) fillComboBoxIfCalibrationOperation();
             }
         }
     }
@@ -392,7 +392,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
     
-    private void saveOperation(int firstIndex, int lastIndex) {
+    private boolean saveOperation(int firstIndex, int lastIndex) {
         String fullPath = mainFrameModel.getCreateNewCardModel().getDestinationDirectory() 
                     + "\\" + mainFrameModel.getCurrentOperationRecord().getPlace().toString() + ". "
                     + mainFrameModel.getCurrentOperationRecord().getOperationName() + ".csv";
@@ -404,9 +404,11 @@ public class MainFrame extends javax.swing.JFrame {
                     , firstIndex
                     , lastIndex);
             logTextArea.append(" - OK\n");
+            return true;
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Could not save the trace.");
             logTextArea.append(" - NOK\n");
+            return false;
         }
     }
     
