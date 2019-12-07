@@ -1,4 +1,4 @@
-# 2019-SBAPR-CryptoOperationsExtractor
+# SPA-Cryptographic-Operations-Extractor
 
 This programme was created as a part of a Bachelor thesis.
 It serves to extract powertraces of cryptographic oprations measured on smart cards depedning on the delimiting operation.
