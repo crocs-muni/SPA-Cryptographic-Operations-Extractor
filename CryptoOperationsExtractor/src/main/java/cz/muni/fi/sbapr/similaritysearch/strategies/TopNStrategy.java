@@ -7,8 +7,8 @@ package cz.muni.fi.sbapr.similaritysearch.strategies;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
-import javafx.util.Pair;
 import cz.muni.fi.sbapr.similaritysearch.Similarity;
+import cz.muni.fi.sbapr.util.OverlappingPair;
 
 /**
  *
@@ -34,18 +34,18 @@ public class TopNStrategy implements SimilaritySearchStrategy {
         
         if (similarity.getDistance() < similarities.last().getDistance() || !isFull())
         {
-            Pair<Boolean, Similarity> overlapping = isOverlapping(similarity);
-            if (overlapping.getKey() && overlapping.getValue().getDistance() > similarity.getDistance()) {
-                similarities.remove(overlapping.getValue());
+            OverlappingPair<Boolean, Similarity> overlapping = isOverlapping(similarity);
+            if (overlapping.getFirstValue()&& overlapping.getSecondValue().getDistance() > similarity.getDistance()) {
+                similarities.remove(overlapping.getSecondValue());
                 similarities.add(similarity);
                 return;
             }
-            if (!overlapping.getKey() && isFull()) {
+            if (!overlapping.getFirstValue() && isFull()) {
                 similarities.remove(similarities.last());                
                 similarities.add(similarity);
                 return;
             }
-            if (!overlapping.getKey() && !isFull()) {
+            if (!overlapping.getFirstValue() && !isFull()) {
                 similarities.add(similarity);
             }
         }
@@ -55,12 +55,12 @@ public class TopNStrategy implements SimilaritySearchStrategy {
         return similarities.size() >= topNOccurences;
     }
     
-    private Pair<Boolean, Similarity> isOverlapping(Similarity similarityToAdd) {
+    private OverlappingPair<Boolean, Similarity> isOverlapping(Similarity similarityToAdd) {
         for (Similarity similarity : similarities) {
             if (similarity.getLastIndex() > similarityToAdd.getFirstIndex() && similarity.getFirstIndex() < similarityToAdd.getLastIndex()) 
-                return new Pair(true, similarity);
+                return new OverlappingPair(true, similarity);
         }
-        return new Pair(false, null);
+        return new OverlappingPair(false, null);
     }
     
     @Override

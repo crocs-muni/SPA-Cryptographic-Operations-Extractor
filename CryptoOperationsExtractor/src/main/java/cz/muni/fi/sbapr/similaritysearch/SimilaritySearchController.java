@@ -10,7 +10,6 @@ import cz.muni.fi.sbapr.disatancemeasure.DistanceMeasure;
 import cz.muni.fi.sbapr.disatancemeasure.EuclideanDistance;
 import cz.muni.fi.sbapr.disatancemeasure.ManhattanDistance;
 import java.util.SortedSet;
-import javafx.util.Pair;
 import cz.muni.fi.sbapr.filters.LowPassFilter;
 import cz.muni.fi.sbapr.models.Trace;
 import cz.muni.fi.sbapr.similaritysearch.multithread.MultiThreadController;
@@ -92,12 +91,10 @@ public class SimilaritySearchController {
         return operation;
     }
     
-    private static Pair<Trace, Trace> applyFilterMakeCopy(Trace trace, Trace operation) {
-        LowPassFilter lowPassFilter = new LowPassFilter(operation.getSamplingFrequency(), CUTOFF_FREQUENCY);
-        Trace operationCopy = lowPassFilter.applyLowPassFilterMakeCopy(operation);
-        lowPassFilter.setSamplingFrequency(trace.getSamplingFrequency());
+    private static Trace applyFilterMakeCopy(Trace trace, int cutoffFrequency) {
+        LowPassFilter lowPassFilter = new LowPassFilter(trace.getSamplingFrequency(), cutoffFrequency);
         Trace traceCopy = lowPassFilter.applyLowPassFilterMakeCopy(trace);
-        return new Pair(traceCopy, operationCopy);
+        return traceCopy;
     }
     
     private static void moveAlongYAxis(Trace trace, Trace operation) {
@@ -110,12 +107,13 @@ public class SimilaritySearchController {
     }
     
     public static SortedSet<Similarity> searchTraceForOperation(Trace trace, Trace operation, DistanceMeasure distanceAlgorithm, SimilaritySearchSwingWorker similaritySearchTask) throws InterruptedException {
-        Pair<Trace, Trace> traceOperationCopies = applyFilterMakeCopy(trace, operation);
+        Trace traceCopy = applyFilterMakeCopy(trace, CUTOFF_FREQUENCY);
+        Trace operationCopy = applyFilterMakeCopy(operation, CUTOFF_FREQUENCY);
 
-        Trace modifiedOperation = adjustSamplingFrequency(traceOperationCopies.getKey(), trace.getSamplingFrequency(), traceOperationCopies.getValue(), operation.getSamplingFrequency());
+        Trace modifiedOperation = adjustSamplingFrequency(traceCopy, trace.getSamplingFrequency(), operationCopy, operation.getSamplingFrequency());
        
         //moveAlongYAxis(traceOperationCopies.getKey(), traceOperationCopies.getValue()); Needed functionality? What options do I have? According to max, min, 0 or other constant. Move trace or operation?
         
-        return MultiThreadController.searchForSimilarities(traceOperationCopies.getKey(), modifiedOperation, distanceAlgorithm, similaritySearchTask);
+        return MultiThreadController.searchForSimilarities(traceCopy, modifiedOperation, distanceAlgorithm, similaritySearchTask);
     }
 }
