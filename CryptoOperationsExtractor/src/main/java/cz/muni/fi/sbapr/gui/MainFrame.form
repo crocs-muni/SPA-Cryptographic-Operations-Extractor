@@ -69,7 +69,7 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="chooseCalibrationOperationJLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="delimitingOperationJComboBox" max="32767" attributes="0"/>
+                              <Component id="delimitingOperationJComboBox" min="-2" pref="315" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -124,7 +124,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="chooseCalibrationOperationJLabel" min="-2" max="-2" attributes="0"/>
-                          <Component id="delimitingOperationJComboBox" min="-2" max="-2" attributes="0"/>
+                          <Component id="delimitingOperationJComboBox" min="-2" pref="22" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Component id="logTextArea" pref="0" max="32767" attributes="0"/>
@@ -235,6 +235,9 @@
           </StringArray>
         </Property>
         <Property name="enabled" type="boolean" value="false"/>
+        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[315, 22]"/>
+        </Property>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>

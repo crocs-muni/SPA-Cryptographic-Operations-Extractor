@@ -52,8 +52,6 @@ public class CreateNewJCardDialog extends javax.swing.JDialog {
         sourceDirectoryJTextField = new javax.swing.JTextField();
         sourceDirectoryJButton = new javax.swing.JButton();
         destinationDirectoryJLabel = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
         createNewCardJButton = new javax.swing.JButton();
         destinationDirectoryJTextField = new javax.swing.JTextField();
         destinationDirectoryJButton = new javax.swing.JButton();
@@ -65,8 +63,6 @@ public class CreateNewJCardDialog extends javax.swing.JDialog {
 
         sourceDirectoryJLabel.setText("Select directory in which are measurements for a new card:");
 
-        sourceDirectoryJTextField.setText("C:\\Users\\Martin\\Desktop\\SBAPR\\Program\\CryptoOperationsExtractor\\src\\test\\java\\cz\\muni\\fi\\sbapr\\TestData\\Data\\NXP J3A081");
-
         sourceDirectoryJButton.setText("...");
         sourceDirectoryJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -76,19 +72,12 @@ public class CreateNewJCardDialog extends javax.swing.JDialog {
 
         destinationDirectoryJLabel.setText("Select destination directory:");
 
-        jTextArea1.setEditable(false);
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
-
         createNewCardJButton.setText("Create");
         createNewCardJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 createNewCardJButtonActionPerformed(evt);
             }
         });
-
-        destinationDirectoryJTextField.setText("C:\\Users\\Martin\\Desktop\\SBAPR\\Program\\CryptoOperationsExtractor\\src\\test\\java\\cz\\muni\\fi\\sbapr\\TestData\\Results\\NXP J3A081");
 
         destinationDirectoryJButton.setText("...");
         destinationDirectoryJButton.addActionListener(new java.awt.event.ActionListener() {
@@ -104,7 +93,6 @@ public class CreateNewJCardDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(createNewCardJLabel)
@@ -141,9 +129,7 @@ public class CreateNewJCardDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(destinationDirectoryJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(destinationDirectoryJButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
                 .addComponent(createNewCardJButton)
                 .addContainerGap())
         );
@@ -198,8 +184,6 @@ public class CreateNewJCardDialog extends javax.swing.JDialog {
     private javax.swing.JButton destinationDirectoryJButton;
     private javax.swing.JLabel destinationDirectoryJLabel;
     private javax.swing.JTextField destinationDirectoryJTextField;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JButton sourceDirectoryJButton;
     private javax.swing.JLabel sourceDirectoryJLabel;
     private javax.swing.JTextField sourceDirectoryJTextField;
