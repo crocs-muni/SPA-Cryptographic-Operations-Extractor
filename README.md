@@ -16,3 +16,4 @@ Brief description about the whole idea and bachelor thesis can be found on https
 6. You should mark the beggining and the ending of this operation by simply clicking on the chart (if you used mentioned applet there should be visible 6 same looking operations).
 7. After this you must highlight marked operation (optionally you can press CTRL+H) and if the selected result is fine save this (by CTRL+S). This operation should be added to the combobox and selected, now you can turn on similarity search.
 8. Now every power trace similarity search should be executed on will be processed in this way and you just check whether the result is right if yes the result is automatically saved. If the result is not right you can highlight wanted operation and simply save it.
+[COP](images/COP.png)
